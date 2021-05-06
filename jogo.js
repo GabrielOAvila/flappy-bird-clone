@@ -32,7 +32,7 @@ const planoFundo = {
 			planoFundo.largura, planoFundo.altura
 		)
 	}
-}
+};
 
 const chao = {
 	spriteX: 0,
@@ -57,7 +57,7 @@ const chao = {
 			chao.largura, chao.altura
 		);
 	}
-}
+};
 
 const passaro = {
 	spriteX: 0,
@@ -81,16 +81,82 @@ const passaro = {
 			passaro.largura, passaro.altura // Tamanho dentro do canvas
 		);
 	}
-}
+};
+
+// Mensagem de Get Ready
+const mensagemPronto = {
+	sX: 134,
+	sY: 0,
+	w: 174,
+	h: 152,
+	x: (canvas.width / 2) - 174 / 2,
+	y: 50,
+	desenha() {
+		contexto.drawImage(
+			sprites,
+			mensagemPronto.sX, mensagemPronto.sY,
+			mensagemPronto.w, mensagemPronto.h,
+			mensagemPronto.x, mensagemPronto.y,
+			mensagemPronto.w, mensagemPronto.h
+		);
+	}
+};
+
+// Telas
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+	telaAtiva = novaTela;
+};
+
+const Telas = {
+	INICIO: {
+		desenha() {
+			planoFundo.desenha();
+			chao.desenha();
+			passaro.desenha();
+			mensagemPronto.desenha();
+		},
+		atualiza() {
+		},
+		click() {
+			mudaParaTela(Telas.JOGO);
+		}
+	},
+	JOGO: {
+		desenha() {
+			planoFundo.desenha();
+			chao.desenha();
+			passaro.desenha();
+		},
+		atualiza() {
+			passaro.atualiza();
+		}
+	}
+};
+
+Telas.JOGO = {
+	desenha() {
+		planoFundo.desenha();
+		chao.desenha();
+		passaro.desenha();
+	},
+	atualiza() {
+		passaro.atualiza();
+	}
+};
 
 function animacao() {
-	passaro.atualiza();
-	
-	planoFundo.desenha();
-	chao.desenha();
-	passaro.desenha();
-	
-	requestAnimationFrame(animacao);
-}
+	telaAtiva.desenha();
+	telaAtiva.atualiza();
 
+	requestAnimationFrame(animacao);
+};
+
+window.addEventListener('click', function() {
+	if(telaAtiva.click) {
+		telaAtiva.click();
+	}
+});
+
+mudaParaTela(Telas.INICIO);
 animacao();
